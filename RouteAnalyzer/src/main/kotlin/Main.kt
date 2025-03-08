@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets
 
 data class Waypoint(val timestamp: Long, val latitude: Double, val longitude: Double)
 
-fun parseCsv(filePath: String): List<Any> {
+fun parseCsv(filePath: String): List<Waypoint> {
     val file = File(filePath)
     val csvFormat = CSVFormat.Builder.create()
         .setDelimiter(';')
