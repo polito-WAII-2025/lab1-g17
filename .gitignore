@@ -7,6 +7,20 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Gradle
+.gradle/
+build/
+!gradle-wrapper.jar
+.gradle-cache/
+.gradle-build/
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
 node_modules
 dist
 dist-ssr
