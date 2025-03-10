@@ -3,7 +3,7 @@ plugins {
     application
 }
 
-group = "org.example"
+group = "com.carrental"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -23,5 +23,5 @@ kotlin {
 }
 
 application {
-    mainClass = "org.example.MainKt"
+    mainClass = "com.carrental.MainKt"
 }
