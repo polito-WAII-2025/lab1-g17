@@ -3,7 +3,7 @@ plugins {
     application
 }
 
-group = "org.example"
+group = "com.carrental"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation("org.apache.commons:commons-csv:1.9.0")
     testImplementation(kotlin("test"))
 }
 
@@ -22,5 +23,5 @@ kotlin {
 }
 
 application {
-    mainClass = "org.example.MainKt"
+    mainClass = "com.carrental.MainKt"
 }
