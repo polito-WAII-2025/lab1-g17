@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     implementation("org.apache.commons:commons-csv:1.9.0")
+    implementation("org.yaml:snakeyaml:2.0")
     testImplementation(kotlin("test"))
 }
 
