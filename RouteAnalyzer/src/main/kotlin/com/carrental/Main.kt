@@ -7,6 +7,10 @@ import java.nio.charset.StandardCharsets
 import org.yaml.snakeyaml.Yaml
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.carrental.haversine
+import com.carrental.parseCsv
+import com.carrental.loadConfig
+
+import com.carrental.computeMaxDistanceFromStart
 import com.carrental.findMostFrequentedArea
 import com.carrental.countWaypointsOutsideGeofence
 import com.carrental.computeMostFrequentedAreaRadius
@@ -67,9 +71,8 @@ fun main() {
     val waypoints = parseCsv("waypoints.csv")
     val config = loadConfig("custom-parameters.yml")
 
-    val startPoint = waypoints.first()
     // Compute the maximum distance from the starting point using the Haversine formula
-    val maxDistanceFromStart = waypoints.maxOf { haversine(config.earthRadiusKm, startPoint.latitude, startPoint.longitude, it.latitude, it.longitude) }
+    val maxDistanceFromStart = computeMaxDistanceFromStart(waypoints, config.earthRadiusKm)
     // Determine the most frequented area based on the provided waypoints
     val mostFrequentedArea = findMostFrequentedArea(waypoints)
     // Count the number of waypoints that are outside the defined geofence area

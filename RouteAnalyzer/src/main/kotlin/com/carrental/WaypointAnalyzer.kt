@@ -19,6 +19,19 @@ fun haversine(earthRadiusKm: Double, lat1: Double, lon1: Double, lat2: Double, l
 }
 
 /**
+ * Computes the maximum distance from the starting point in the given list of waypoints.
+ * Uses the Haversine formula to calculate distances.
+ *
+ * @param waypoints The list of waypoints containing latitude and longitude.
+ * @param earthRadiusKm The Earth's radius in kilometers, used for distance calculation.
+ * @return The maximum distance (in km) from the starting waypoint to any other waypoint.
+ */
+fun computeMaxDistanceFromStart(waypoints: List<Waypoint>, earthRadiusKm: Double): Double {
+    val startPoint = waypoints.first()
+    return waypoints.maxOf { haversine(earthRadiusKm, startPoint.latitude, startPoint.longitude, it.latitude, it.longitude) }
+}
+
+/**
  * Determines the most frequently visited location among waypoints.
  *
  * @param waypoints List of waypoints containing latitude and longitude.
