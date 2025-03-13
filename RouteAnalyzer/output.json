@@ -1,0 +1,9 @@
+{
+  "waypointsOutsideGeofence" : 5,
+  "mostFrequentedArea" : {
+    "first" : 45.04489,
+    "second" : 7.62303
+  },
+  "mostFrequentedAreaRadiusKm" : 0.5237188397887113,
+  "maxDistanceFromStart" : 5.237188397887112
+}
