@@ -19,44 +19,38 @@ fun haversine(earthRadiusKm: Double, lat1: Double, lon1: Double, lat2: Double, l
 }
 
 /**
- * Computes the maximum distance from the starting point in the given list of waypoints.
+ * Computes the maximum distance from the starting waypoint to any other waypoint in the list.
  * Uses the Haversine formula to calculate distances.
+ * Returns a pair containing the waypoint with the maximum distance and the computed distance in kilometers.
  *
- * @param waypoints The list of waypoints containing latitude and longitude.
- * @param earthRadiusKm The Earth's radius in kilometers, used for distance calculation.
- * @return The maximum distance (in km) from the starting waypoint to any other waypoint.
+ * @param waypoints A list of waypoints to process.
+ * @param earthRadiusKm The radius of the Earth in kilometers, used for Haversine distance calculation.
+ * @return A Pair containing the waypoint that is the farthest from the starting point and the corresponding distance.
+ * @throws IllegalArgumentException if the waypoints list is empty.
  */
-fun computeMaxDistanceFromStart(waypoints: List<Waypoint>, earthRadiusKm: Double): Double {
+fun computeMaxDistanceFromStart(waypoints: List<Waypoint>, earthRadiusKm: Double): Pair<Waypoint, Double> {
     val startPoint = waypoints.first()
-    return waypoints.maxOf { haversine(earthRadiusKm, startPoint.latitude, startPoint.longitude, it.latitude, it.longitude) }
+
+    val distances = waypoints.map { waypoint ->
+        val distance = haversine(earthRadiusKm, startPoint.latitude, startPoint.longitude, waypoint.latitude, waypoint.longitude)
+        waypoint to distance
+    }
+    return distances.maxByOrNull { it.second }
+        ?: throw IllegalArgumentException("Waypoints list cannot be empty")
 }
 
 /**
- * Determines the most frequently visited location among waypoints.
+ * Determines the most frequently visited waypoint among the given waypoints.
  *
- * @param waypoints List of waypoints containing latitude and longitude.
- * @return The latitude and longitude of the most frequently visited location.
+ * @param waypoints List of waypoints containing timestamp, latitude, and longitude.
+ * @return A pair containing the most frequently visited waypoint and the number of times it was visited.
  */
-fun findMostFrequentedArea(waypoints: List<Waypoint>): Pair<Double, Double> {
+fun findMostFrequentedArea(waypoints: List<Waypoint>): Pair<Waypoint, Int> {
     return waypoints
-        .groupingBy { it.latitude to it.longitude }
+        .groupingBy { it }
         .eachCount()
         .maxByOrNull { it.value }
-        ?.key ?: (0.0 to 0.0)
-}
-
-/**
- * Counts the number of waypoints that are outside a specified geofence.
- *
- * @param waypoints List of waypoints containing latitude and longitude.
- * @param earthRadiusKm Radius of the Earth in kilometers.
- * @param centerLat Latitude of the geofence center.
- * @param centerLon Longitude of the geofence center.
- * @param radiusKm Radius of the geofence in kilometers.
- * @return The number of waypoints outside the geofence.
- */
-fun countWaypointsOutsideGeofence(waypoints: List<Waypoint>, earthRadiusKm:Double, centerLat: Double, centerLon: Double, radiusKm: Double): Int {
-    return waypoints.count { haversine(earthRadiusKm, it.latitude, it.longitude, centerLat, centerLon) > radiusKm }
+        ?.toPair() ?: throw IllegalArgumentException("Waypoints list cannot be empty")
 }
 
 /**
@@ -70,4 +64,40 @@ fun countWaypointsOutsideGeofence(waypoints: List<Waypoint>, earthRadiusKm:Doubl
 fun computeMostFrequentedAreaRadius(mostFrequentedAreaRadiusKm: Double?, maxDistance: Double): Double {
     return mostFrequentedAreaRadiusKm ?:
     if (maxDistance < 1.0) 0.1 else maxDistance * 0.1
+}
+
+/**
+ * Filters waypoints that are outside the specified geofence.
+ *
+ * @param waypoints List of waypoints.
+ * @param earthRadiusKm Earth's radius in kilometers.
+ * @param centerLat Latitude of the geofence center.
+ * @param centerLon Longitude of the geofence center.
+ * @param radiusKm Radius of the geofence in kilometers.
+ * @return List of waypoints outside the geofence.
+ */
+fun findWaypointsOutsideGeofence(
+    waypoints: List<Waypoint>,
+    earthRadiusKm: Double,
+    centerLat: Double,
+    centerLon: Double,
+    radiusKm: Double
+): List<Waypoint> {
+    return waypoints.filter { haversine(earthRadiusKm, it.latitude, it.longitude, centerLat, centerLon) > radiusKm }
+}
+
+/**
+ * Computes the central point of waypoints that are outside the geofence.
+ * The center is calculated as the average latitude and longitude of all waypoints.
+ *
+ * @param waypointsOutside List of waypoints that are outside the geofence.
+ * @return The computed central waypoint, or null if the list is empty.
+ */
+fun computeOutsideGeofenceCenter(waypointsOutside: List<Waypoint>): Waypoint? {
+    if (waypointsOutside.isEmpty()) return null
+
+    val avgLat = waypointsOutside.sumOf { it.latitude } / waypointsOutside.size
+    val avgLon = waypointsOutside.sumOf { it.longitude } / waypointsOutside.size
+
+    return Waypoint(0, avgLat, avgLon)
 }
