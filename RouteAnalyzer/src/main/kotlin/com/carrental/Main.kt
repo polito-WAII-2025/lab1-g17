@@ -112,6 +112,22 @@ fun main() {
     println("Results saved to output.json")
     println(jsonString)
 /*
+    val geofenceResult = GeofenceResult(
+        waypointsOutsideGeofence = waypointsOutsideGeofence,
+        mostFrequentedArea = mostFrequentedArea,
+        mostFrequentedAreaRadiusKm = mostFrequentedAreaRadiusKm,
+        maxDistanceFromStart = maxDistanceFromStart
+    )
+
+    // Convert result to JSON and save to a file
+    val jsonMapper = jacksonObjectMapper()
+    val jsonString = jsonMapper.writeValueAsString(geofenceResult)
+    File("geofence_result.json").writeText(jsonString)
+
+    // Print output for debugging
+    println("Results saved to geofence_result.json")
+    println(jsonString)
+/*
     println("Waypoints: $waypoints")
     println("Max Distance from Start: $maxDistanceFromStart km. Farthest Waypoint: $farthestWaypoint")
     println("Most Frequented Area: $mostFrequentedArea. Most Frequented Entries Count: $mostFrequentedEntriesCount. Most Frequented Area Radius: $mostFrequentedAreaRadiusKm")
