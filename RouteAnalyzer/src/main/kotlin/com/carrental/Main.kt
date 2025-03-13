@@ -1,63 +1,20 @@
 package com.carrental
 
-import org.apache.commons.csv.CSVFormat
-import org.apache.commons.csv.CSVParser
-import java.io.File
-import java.nio.charset.StandardCharsets
-import org.yaml.snakeyaml.Yaml
+import com.carrental.parseCsv
+import com.carrental.loadConfig
 
-import com.carrental.haversine
+import com.carrental.computeMaxDistanceFromStart
 import com.carrental.findMostFrequentedArea
 import com.carrental.countWaypointsOutsideGeofence
 import com.carrental.computeMostFrequentedAreaRadius
-
-data class Config( val earthRadiusKm: Double, val geofenceCenterLatitude: Double, val geofenceCenterLongitude: Double, val geofenceRadiusKm: Double, val mostFrequentedAreaRadiusKm: Double? = null)
-
-fun loadConfig(filePath: String): Config {
-    val yaml = Yaml()
-    val file = File(filePath).readText()
-    val map: Map<String, Any> = yaml.load(file)
-
-    return Config(
-        earthRadiusKm = map["earthRadiusKm"] as Double,
-        geofenceCenterLatitude = map["geofenceCenterLatitude"] as Double,
-        geofenceCenterLongitude = map["geofenceCenterLongitude"] as Double,
-        geofenceRadiusKm = map["geofenceRadiusKm"] as Double,
-        mostFrequentedAreaRadiusKm = map["mostFrequentedAreaRadiusKm"] as? Double
-    )
-}
-
-data class Waypoint(val timestamp: Long, val latitude: Double, val longitude: Double)
-
-fun parseCsv(filePath: String): List<Waypoint> {
-    val file = File(filePath)
-    val csvFormat = CSVFormat.Builder.create()
-        .setDelimiter(';')
-        .setHeader()
-        .setSkipHeaderRecord(true)
-        .build()
-    val parsedFile = CSVParser(
-        file.bufferedReader(StandardCharsets.UTF_8),
-        csvFormat
-    )
-
-    return parsedFile.records.map {
-        Waypoint(
-            timestamp = it[0].toDouble().toLong(),
-            latitude = it[1].toDouble(),
-            longitude = it[2].toDouble()
-        )
-    }
-}
 
 
 fun main() {
     val waypoints = parseCsv("waypoints.csv")
     val config = loadConfig("custom-parameters.yml")
 
-    val startPoint = waypoints.first()
     // Compute the maximum distance from the starting point using the Haversine formula
-    val maxDistanceFromStart = waypoints.maxOf { haversine(config.earthRadiusKm, startPoint.latitude, startPoint.longitude, it.latitude, it.longitude) }
+    val maxDistanceFromStart = computeMaxDistanceFromStart(waypoints, config.earthRadiusKm)
     // Determine the most frequented area based on the provided waypoints
     val mostFrequentedArea = findMostFrequentedArea(waypoints)
     // Count the number of waypoints that are outside the defined geofence area
