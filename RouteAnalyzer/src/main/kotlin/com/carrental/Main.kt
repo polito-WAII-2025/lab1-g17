@@ -3,21 +3,30 @@ package com.carrental
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.io.File
-import com.carrental.parseCsv
-import com.carrental.loadConfig
-import com.carrental.computeMaxDistanceFromStart
-import com.carrental.findMostFrequentedArea
-import com.carrental.computeMostFrequentedAreaRadius
-import com.carrental.findWaypointsOutsideGeofence
-import com.carrental.computeOutsideGeofenceCenter
 
 
-// Data class to store computed results
+// Data classes for structured output
+data class MaxDistanceFromStart(
+    val waypoint: Waypoint,
+    val distanceKm: Double
+)
+
+data class MostFrequentedArea(
+    val centralWaypoint: Waypoint,
+    val areaRadiusKm: Double,
+    val entriesCount: Int
+)
+
+data class WaypointsOutsideGeofence(
+    val centralWaypoint: Waypoint?,
+    val waypoints: List<Waypoint>,
+    val waypointsOutsideCount: Int
+)
+
 data class GeofenceResult(
-    val waypointsOutsideGeofence: Int,
-    val mostFrequentedArea: Waypoint,
-    val mostFrequentedAreaRadiusKm: Double,
-    val maxDistanceFromStart: Double
+    val maxDistanceFromStart: MaxDistanceFromStart,
+    val mostFrequentedArea: MostFrequentedArea,
+    val waypointsOutsideGeofence: WaypointsOutsideGeofence,
 )
 
 fun main() {
@@ -26,8 +35,10 @@ fun main() {
 
     // Compute the maximum distance from the starting point using the Haversine formula
     val (farthestWaypoint, maxDistanceFromStart) = computeMaxDistanceFromStart(waypoints, config.earthRadiusKm)
+
     // Determine the most frequented area and entries count based on the provided waypoints
     val (mostFrequentedArea, mostFrequentedEntriesCount) = findMostFrequentedArea(waypoints)
+
     // Compute the radius of the most frequented area, using a default if not provided in the configuration
     val mostFrequentedAreaRadiusKm = computeMostFrequentedAreaRadius(
         config.mostFrequentedAreaRadiusKm,
@@ -44,19 +55,25 @@ fun main() {
     val waypointsOutsideCenterPoint = computeOutsideGeofenceCenter(waypointsOutside)
     val waypointsOutsideCount = waypointsOutside.size
 
-    val geofenceResult = GeofenceResult(
-        waypointsOutsideGeofence = waypointsOutsideCount,
-        mostFrequentedArea = mostFrequentedArea,
-        mostFrequentedAreaRadiusKm = mostFrequentedAreaRadiusKm,
-        maxDistanceFromStart = maxDistanceFromStart
-    )
-    /*
-    println("Max Distance from Start: $maxDistanceFromStart km")
-    println("Most Frequented Area: $mostFrequentedArea")
-    println("Outside a specified geo-fence: $waypointsOutsideGeofence")
-    println("Most Frequented Area Radius: $mostFrequentedAreaRadiusKm")
-     */
 
+    // Construct output object
+    val geofenceResult = GeofenceResult(
+        maxDistanceFromStart = MaxDistanceFromStart(
+            waypoint = farthestWaypoint,
+            distanceKm = maxDistanceFromStart
+        ),
+        mostFrequentedArea = MostFrequentedArea(
+            centralWaypoint = mostFrequentedArea,
+            areaRadiusKm = mostFrequentedAreaRadiusKm,
+            entriesCount = mostFrequentedEntriesCount
+        ),
+        waypointsOutsideGeofence = WaypointsOutsideGeofence(
+            centralWaypoint = waypointsOutsideCenterPoint,
+            waypoints = waypointsOutside,
+            waypointsOutsideCount = waypointsOutsideCount
+        )
+
+    )
 
     // Convert result to pretty-printed JSON and save to file
     val jsonMapper = jacksonObjectMapper().writerWithDefaultPrettyPrinter()
@@ -69,21 +86,7 @@ fun main() {
     println(jsonString)
 }
 
-/*
-        config.geofenceRadiusKm)
-    val waypointsOutsideCenterPoint = computeOutsideGeofenceCenter(waypointsOutside)
-    val waypointsOutsideCount = waypointsOutside.size
 
 
 
-    println("Waypoints: $waypoints")
-    println("Max Distance from Start: $maxDistanceFromStart km. Farthest Waypoint: $farthestWaypoint")
-    println("Most Frequented Area: $mostFrequentedArea. Most Frequented Entries Count: $mostFrequentedEntriesCount. Most Frequented Area Radius: $mostFrequentedAreaRadiusKm")
-    println("Points outside a specified geo-fence: $waypointsOutside. Center of Points: $waypointsOutsideCenterPoint. Number of points: $waypointsOutsideCount")
-
-
-
-*/
-
-}
 
