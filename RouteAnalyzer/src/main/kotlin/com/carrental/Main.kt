@@ -1,7 +1,16 @@
 package com.carrental
 
+
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.io.File
+import com.carrental.parseCsv
+import com.carrental.loadConfig
+import com.carrental.computeMaxDistanceFromStart
+import com.carrental.findMostFrequentedArea
+import com.carrental.computeMostFrequentedAreaRadius
+import com.carrental.findWaypointsOutsideGeofence
+import com.carrental.computeOutsideGeofenceCenter
+
 
 // Data class to store computed results
 data class GeofenceResult(
@@ -61,11 +70,20 @@ fun main() {
 }
 
 /*
+        config.geofenceRadiusKm)
+    val waypointsOutsideCenterPoint = computeOutsideGeofenceCenter(waypointsOutside)
+    val waypointsOutsideCount = waypointsOutside.size
+
+
+
     println("Waypoints: $waypoints")
     println("Max Distance from Start: $maxDistanceFromStart km. Farthest Waypoint: $farthestWaypoint")
     println("Most Frequented Area: $mostFrequentedArea. Most Frequented Entries Count: $mostFrequentedEntriesCount. Most Frequented Area Radius: $mostFrequentedAreaRadiusKm")
     println("Points outside a specified geo-fence: $waypointsOutside. Center of Points: $waypointsOutsideCenterPoint. Number of points: $waypointsOutsideCount")
 
 
+
 */
+
+}
 
