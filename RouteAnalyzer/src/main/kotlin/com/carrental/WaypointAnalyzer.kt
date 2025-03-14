@@ -100,4 +100,7 @@ fun computeOutsideGeofenceCenter(waypointsOutside: List<Waypoint>): Waypoint? {
     val avgLon = waypointsOutside.sumOf { it.longitude } / waypointsOutside.size
 
     return Waypoint(0, avgLat, avgLon)
+
+
 }
+
