@@ -17,7 +17,7 @@ fun main() {
     // Compute the maximum distance from the starting point using the Haversine formula
     val (farthestWaypoint, maxDistanceFromStart) = computeMaxDistanceFromStart(waypoints, config.earthRadiusKm)
     // Determine the most frequented area and entries count based on the provided waypoints
-    val (mostFrequentedArea, mostFrequentedEntriesCount) = findMostFrequentedArea(waypoints)
+    val (mostFrequentedArea, mostFrequentedEntriesCount) = findMostFrequentedArea(waypoints, config.decimalPlaces)
     // Compute the radius of the most frequented area, using a default if not provided in the configuration
     val mostFrequentedAreaRadiusKm = computeMostFrequentedAreaRadius(
         config.mostFrequentedAreaRadiusKm,

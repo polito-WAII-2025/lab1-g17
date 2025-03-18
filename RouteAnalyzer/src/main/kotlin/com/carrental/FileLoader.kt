@@ -13,8 +13,9 @@ import java.nio.charset.StandardCharsets
  * @param geofenceCenterLongitude Longitude of the geofence center.
  * @param geofenceRadiusKm Radius of the geofence area in kilometers.
  * @param mostFrequentedAreaRadiusKm (Optional) Radius of the most frequented area in kilometers.
+ * @param decimalPlaces The number of decimal places to round coordinates to
  */
-data class Config( val earthRadiusKm: Double, val geofenceCenterLatitude: Double, val geofenceCenterLongitude: Double, val geofenceRadiusKm: Double, val mostFrequentedAreaRadiusKm: Double? = null)
+data class Config( val earthRadiusKm: Double, val geofenceCenterLatitude: Double, val geofenceCenterLongitude: Double, val geofenceRadiusKm: Double, val mostFrequentedAreaRadiusKm: Double? = null, val decimalPlaces: Int)
 
 /**
  * Data class representing a waypoint with a timestamp, latitude, and longitude.
@@ -39,7 +40,8 @@ fun loadConfig(filePath: String): Config {
         geofenceCenterLatitude = map["geofenceCenterLatitude"] as Double,
         geofenceCenterLongitude = map["geofenceCenterLongitude"] as Double,
         geofenceRadiusKm = map["geofenceRadiusKm"] as Double,
-        mostFrequentedAreaRadiusKm = map["mostFrequentedAreaRadiusKm"] as? Double
+        mostFrequentedAreaRadiusKm = map["mostFrequentedAreaRadiusKm"] as? Double,
+        decimalPlaces = map["decimalPlaces"] as Int,
     )
 }
 

@@ -2,6 +2,18 @@ package com.carrental
 import kotlin.math.*
 
 /**
+ * Rounds a given value to the specified number of decimal places.
+ *
+ * @param value The value to round.
+ * @param places The number of decimal places to round to.
+ * @return The rounded value.
+ */
+fun round(value: Double, places: Int): Double {
+    val factor = 10.0.pow(places)
+    return (value * factor).roundToInt() / factor
+}
+
+/**
  * Computes the great-circle distance between two points using the Haversine formula.
  *
  * @param earthRadiusKm Radius of the Earth in kilometers.
@@ -43,11 +55,19 @@ fun computeMaxDistanceFromStart(waypoints: List<Waypoint>, earthRadiusKm: Double
  * Determines the most frequently visited waypoint among the given waypoints.
  *
  * @param waypoints List of waypoints containing timestamp, latitude, and longitude.
+ * @param decimalPlaces The number of decimal places to round coordinates to.
  * @return A pair containing the most frequently visited waypoint and the number of times it was visited.
+ * @throws IllegalArgumentException if the waypoints list is empty.
  */
-fun findMostFrequentedArea(waypoints: List<Waypoint>): Pair<Waypoint, Int> {
+fun findMostFrequentedArea(waypoints: List<Waypoint>, decimalPlaces: Int): Pair<Waypoint, Int> {
     return waypoints
-        .groupingBy { it }
+        .groupingBy { waypoint ->
+            Waypoint(
+                waypoint.timestamp,
+                round(waypoint.latitude, decimalPlaces),
+                round(waypoint.longitude, decimalPlaces)
+            )
+        }
         .eachCount()
         .maxByOrNull { it.value }
         ?.toPair() ?: throw IllegalArgumentException("Waypoints list cannot be empty")
