@@ -30,8 +30,8 @@ sudo docker run \
 ### Explanation of the Command
 
 - `sudo docker run`: Runs a Docker container.
-- `-v $(pwd)/custom-parameters.yml:/app/config/custom-parameters.yml`: Mounts the `custom-parameters.yml` file from the current directory to the container's `/app/config/custom-parameters.yml` path.
-- `-v $(pwd)/waypoints.csv:/app/data/waypoints.csv`: Mounts the `waypoints.csv` file from the current directory to the container's `/app/data/waypoints.csv` path.
+- `-v $(pwd)/custom-parameters.yml:/app/custom-parameters.yml`: Mounts the `custom-parameters.yml` file from the host machine to the `/app/custom-parameters.yml` path in the container.
+- `-v $(pwd)/waypoints.csv:/app/waypoints.csv`: Mounts the `waypoints.csv` file from the host machine to the `/app/waypoints.csv` path in the container.
 - `route-analyzer`: The name of the Docker image to run.
 
 ## Copying the Output File
