@@ -32,14 +32,13 @@ fun computeGeofenceResult(waypoints: List<Waypoint>, config: Config): GeofenceRe
     // Compute the maximum distance from the starting point using the Haversine formula
     val (farthestWaypoint, maxDistanceFromStart) = computeMaxDistanceFromStart(waypoints, config.earthRadiusKm)
 
-    // Determine the most frequented area and entries count based on the provided waypoints
-    val (mostFrequentedArea, mostFrequentedEntriesCount) = findMostFrequentedArea(waypoints)
-
     // Compute the radius of the most frequented area, using a default if not provided in the configuration
     val mostFrequentedAreaRadiusKm = computeMostFrequentedAreaRadius(
-        config.mostFrequentedAreaRadiusKm,
-        maxDistanceFromStart
+        waypoints, config.earthRadiusKm, config.mostFrequentedAreaRadiusKm
     )
+
+    // Determine the most frequented area and entries count based on the provided waypoints
+    val (mostFrequentedArea, mostFrequentedEntriesCount) = findMostFrequentedArea(waypoints, config.earthRadiusKm, config.mostFrequentedAreaRadiusKm)
 
     // Compute waypoints that are outside the defined geofence area
     val waypointsOutside = findWaypointsOutsideGeofence(

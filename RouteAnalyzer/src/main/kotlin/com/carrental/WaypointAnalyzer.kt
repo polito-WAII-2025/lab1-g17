@@ -40,30 +40,77 @@ fun computeMaxDistanceFromStart(waypoints: List<Waypoint>, earthRadiusKm: Double
 }
 
 /**
- * Determines the most frequently visited waypoint among the given waypoints.
+ * Computes the maximum distance between any two waypoints in the list.
  *
- * @param waypoints List of waypoints containing timestamp, latitude, and longitude.
- * @return A pair containing the most frequently visited waypoint and the number of times it was visited.
+ * @param waypoints A list of waypoints containing latitude and longitude coordinates.
+ * @param earthRadiusKm The radius of the Earth in kilometers.
+ * @return The maximum distance found between any two waypoints. Returns 0.0 if the list has less than two waypoints.
  */
-fun findMostFrequentedArea(waypoints: List<Waypoint>): Pair<Waypoint, Int> {
-    return waypoints
-        .groupingBy { it }
-        .eachCount()
-        .maxByOrNull { it.value }
-        ?.toPair() ?: throw IllegalArgumentException("Waypoints list cannot be empty")
+fun computeMaxDistance(waypoints: List<Waypoint>, earthRadiusKm: Double): Double {
+    if (waypoints.size < 2) return 0.0
+
+    return waypoints.maxOf { w1 ->
+        waypoints.maxOf { w2 -> haversine(earthRadiusKm, w1.latitude, w1.longitude, w2.latitude, w2.longitude) }
+    }
 }
 
 /**
- * Computes the radius of the most frequented area. If the radius is not provided,
- * it is computed based on the farthest distance traveled.
+ * Computes the radius for the most frequented area.
  *
- * @param mostFrequentedAreaRadiusKm Optional predefined radius of the most frequented area.
- * @param maxDistance The maximum distance traveled from the starting point.
- * @return The computed or provided most frequented area radius in kilometers.
+ * This function determines an appropriate clustering radius for identifying the most frequented area.
+ * If a custom radius is provided, it will be used; otherwise, a default radius is calculated based on
+ * the maximum distance between waypoints.
+ *
+ * @param waypoints A list of waypoints containing latitude and longitude coordinates.
+ * @param earthRadiusKm The radius of the Earth in kilometers.
+ * @param mostFrequentedAreaRadiusKm (Optional) A predefined radius for clustering waypoints.
+ *        If null, the function will compute a default radius.
+ * @return The computed radius, rounded to one decimal place.
+ *         - If the max distance between waypoints is less than 1 km, the default radius is 0.1 km.
+ *         - Otherwise, the radius is 10% of the maximum distance.
  */
-fun computeMostFrequentedAreaRadius(mostFrequentedAreaRadiusKm: Double?, maxDistance: Double): Double {
-    return mostFrequentedAreaRadiusKm ?:
-    if (maxDistance < 1.0) 0.1 else maxDistance * 0.1
+fun computeMostFrequentedAreaRadius(
+    waypoints: List<Waypoint>,
+    earthRadiusKm: Double,
+    mostFrequentedAreaRadiusKm: Double?= null
+): Double {
+    val maxDistance = computeMaxDistance(waypoints, earthRadiusKm)
+    val radius = mostFrequentedAreaRadiusKm ?: if (maxDistance < 1.0) 0.1 else maxDistance * 0.1
+    return round(radius * 10) / 10 // Rounds to one decimal place
+}
+
+/**
+ * Finds the most frequented area based on a clustering approach.
+ *
+ * This function iterates through all waypoints, treating each as a potential center,
+ * and counts how many waypoints fall within a defined radius. The waypoint with the highest count is selected.
+ *
+ * @param waypoints A list of waypoints containing latitude and longitude coordinates.
+ * @param earthRadiusKm The radius of the Earth in kilometers.
+ * @param mostFrequentedAreaRadiusKm (Optional) A predefined radius for clustering waypoints.
+ *        If not provided, the function will compute an appropriate radius based on the maximum distance between waypoints.
+ * @return A pair consisting of:
+ *         - The waypoint that represents the most frequented area.
+ *         - The number of waypoints within the defined radius of that central waypoint.
+ * @throws IllegalArgumentException If the waypoint list is empty.
+ */
+fun findMostFrequentedArea(
+    waypoints: List<Waypoint>,
+    earthRadiusKm: Double,
+    mostFrequentedAreaRadiusKm: Double? = null
+): Pair<Waypoint, Int> {
+    if (waypoints.isEmpty()) throw IllegalArgumentException("Waypoints list cannot be empty")
+    val radiusKm = computeMostFrequentedAreaRadius(waypoints, earthRadiusKm, mostFrequentedAreaRadiusKm)
+
+    return waypoints
+        .map { center ->
+            val count = waypoints.count { other ->
+                haversine(earthRadiusKm, center.latitude, center.longitude, other.latitude, other.longitude) <= radiusKm
+            }
+            center to count
+        }
+        .maxByOrNull { it.second } ?: (waypoints.first() to 1)
+
 }
 
 /**
@@ -100,7 +147,4 @@ fun computeOutsideGeofenceCenter(waypointsOutside: List<Waypoint>): Waypoint? {
     val avgLon = waypointsOutside.sumOf { it.longitude } / waypointsOutside.size
 
     return Waypoint(0, avgLat, avgLon)
-
-
 }
-
