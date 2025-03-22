@@ -21,7 +21,7 @@ sudo docker build -t route-analyzer .
 To run the Docker container, use the following command:
 
 ```sh
-sudo docker run --rm \
+sudo docker run \
     -v $(pwd)/custom-parameters.yml:/app/custom-parameters.yml \
     -v $(pwd)/waypoints.csv:/app/waypoints.csv \
     route-analyzer
@@ -30,11 +30,23 @@ sudo docker run --rm \
 ### Explanation of the Command
 
 - `sudo docker run`: Runs a Docker container.
-- `-it`: Runs the container in interactive mode with a terminal.
-- `--entrypoint /bin/bash`: Overrides the default entrypoint to start a Bash shell.
 - `-v $(pwd)/custom-parameters.yml:/app/config/custom-parameters.yml`: Mounts the `custom-parameters.yml` file from the current directory to the container's `/app/config/custom-parameters.yml` path.
 - `-v $(pwd)/waypoints.csv:/app/data/waypoints.csv`: Mounts the `waypoints.csv` file from the current directory to the container's `/app/data/waypoints.csv` path.
 - `route-analyzer`: The name of the Docker image to run.
+
+## Copying the Output File
+
+To copy the output file from the Docker container to the host machine, use the following command:
+
+```sh
+sudo docker cp <container_id>:/app/output.json .
+```
+
+To get the container ID, use the following command:
+
+```sh
+sudo docker ps -a --filter ancestor=route-analyzer
+```
 
 ## Stopping the Docker Container
 
@@ -58,6 +70,11 @@ To delete the stopped Docker container, use the following command:
 sudo docker rm <contener_id>
 ```
 
+To get the container ID, use the following command:
+
+```sh
+sudo docker ps -a --filter ancestor=route-analyzer
+```
 
 ## Removing the Docker Image
 
