@@ -18,7 +18,7 @@ data class MostFrequentedArea(
 data class WaypointsOutsideGeofence(
     val centralWaypoint: Waypoint?,
     val areaRadiusKm: Double,
-    val waypointsOutsideCount: Int,
+    val Count: Int,
     val waypoints: List<Waypoint>,
 )
 
@@ -50,7 +50,7 @@ fun computeGeofenceResult(waypoints: List<Waypoint>, config: Config): GeofenceRe
         config.geofenceRadiusKm
     )
     val waypointsOutsideCenterPoint = computeOutsideGeofenceCenter(waypointsOutside)
-    val waypointsOutsideCount = waypointsOutside.size
+    val Count = waypointsOutside.size
 
     // Construct and return output object
     return GeofenceResult(
@@ -66,7 +66,7 @@ fun computeGeofenceResult(waypoints: List<Waypoint>, config: Config): GeofenceRe
         waypointsOutsideGeofence = WaypointsOutsideGeofence(
             centralWaypoint = waypointsOutsideCenterPoint,
             waypoints = waypointsOutside,
-            waypointsOutsideCount = waypointsOutsideCount,
+            Count = Count,
             areaRadiusKm = config.geofenceRadiusKm
         )
     )

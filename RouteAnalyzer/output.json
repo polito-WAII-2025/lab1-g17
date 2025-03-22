@@ -23,7 +23,6 @@
       "longitude" : 7.66392
     },
     "areaRadiusKm" : 5.0,
-    "waypointsOutsideCount" : 5,
     "waypoints" : [ {
       "timestamp" : 1741432513586,
       "latitude" : 45.10988,
@@ -44,6 +43,7 @@
       "timestamp" : 1741432513631,
       "latitude" : 45.11122,
       "longitude" : 7.66383
-    } ]
+    } ],
+    "count" : 5
   }
 }
