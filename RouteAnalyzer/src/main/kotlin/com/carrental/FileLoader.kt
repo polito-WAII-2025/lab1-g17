@@ -14,7 +14,13 @@ import java.nio.charset.StandardCharsets
  * @param geofenceRadiusKm Radius of the geofence area in kilometers.
  * @param mostFrequentedAreaRadiusKm (Optional) Radius of the most frequented area in kilometers.
  */
-data class Config( val earthRadiusKm: Double, val geofenceCenterLatitude: Double, val geofenceCenterLongitude: Double, val geofenceRadiusKm: Double, val mostFrequentedAreaRadiusKm: Double? = null)
+data class Config(
+    val earthRadiusKm: Double,
+    val geofenceCenterLatitude: Double,
+    val geofenceCenterLongitude: Double,
+    val geofenceRadiusKm: Double,
+    val mostFrequentedAreaRadiusKm: Double? = null
+)
 
 /**
  * Data class representing a waypoint with a timestamp, latitude, and longitude.
@@ -22,7 +28,11 @@ data class Config( val earthRadiusKm: Double, val geofenceCenterLatitude: Double
  * @param latitude Latitude coordinate of the waypoint.
  * @param longitude Longitude coordinate of the waypoint.
  */
-data class Waypoint(val timestamp: Long, val latitude: Double, val longitude: Double)
+data class Waypoint(
+    val timestamp: Long,
+    val latitude: Double,
+    val longitude: Double
+)
 
 /**
  * Loads configuration parameters from a YAML file.
