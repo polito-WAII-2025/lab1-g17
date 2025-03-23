@@ -23,16 +23,16 @@ To run the Docker container, use the following command:
 
 ```sh
 sudo docker run \
-    -v $(pwd)/custom-parameters.yml:/app/custom-parameters.yml \
-    -v $(pwd)/waypoints.csv:/app/waypoints.csv \
+    -v "$(pwd)/custom-parameters.yml:/app/custom-parameters.yml" \
+    -v "$(pwd)/waypoints.csv:/app/waypoints.csv" \
     route-analyzer
 ```
 
 ### Explanation of the Command
 
 - `sudo docker run`: Runs a Docker container.
-- `-v $(pwd)/custom-parameters.yml:/app/custom-parameters.yml`: Mounts the `custom-parameters.yml` file from the host machine to the `/app/custom-parameters.yml` path in the container.
-- `-v $(pwd)/waypoints.csv:/app/waypoints.csv`: Mounts the `waypoints.csv` file from the host machine to the `/app/waypoints.csv` path in the container.
+- `-v "$(pwd)/custom-parameters.yml:/app/custom-parameters.yml"`: Mounts the `custom-parameters.yml` file from the host machine to the `/app/custom-parameters.yml` path in the container.
+- `-v "$(pwd)/waypoints.csv:/app/waypoints.csv"`: Mounts the `waypoints.csv` file from the host machine to the `/app/waypoints.csv` path in the container.
 - `route-analyzer`: The name of the Docker image to run.
 
 ## Copying the Output File
@@ -100,7 +100,7 @@ For example, to run the Docker container on Windows, use the following command:
 
 ```sh
 docker run ^
-    -v %cd%/custom-parameters.yml:/app/custom-parameters.yml ^
-    -v %cd%/waypoints.csv:/app/waypoints.csv ^
+    -v "%cd%/custom-parameters.yml:/app/custom-parameters.yml" ^
+    -v "%cd%/waypoints.csv:/app/waypoints.csv" ^
     route-analyzer
 ```
