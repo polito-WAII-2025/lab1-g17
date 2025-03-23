@@ -18,6 +18,7 @@ sudo docker build -t route-analyzer .
 ```
 
 ## Running the Docker Container
+
 To run the Docker container, use the following command:
 
 ```sh
@@ -83,6 +84,23 @@ To remove the Docker image, use the following command:
 ```sh
 sudo docker rmi route-analyzer
 ```
+
 ## Additional Information
 
 For more information on Docker commands and usage, refer to the [Docker documentation](https://docs.docker.com/).
+
+## Note for Windows Users
+
+This documentation is intended for Unix systems (macOS and Linux). If you are using Windows, you need to make the following changes:
+
+- Replace `$(pwd)` with `%cd%` in the Docker commands.
+- Use `docker` instead of `sudo docker` if you are running Docker with administrative privileges.
+
+For example, to run the Docker container on Windows, use the following command:
+
+```sh
+docker run ^
+    -v %cd%/custom-parameters.yml:/app/custom-parameters.yml ^
+    -v %cd%/waypoints.csv:/app/waypoints.csv ^
+    route-analyzer
+```
