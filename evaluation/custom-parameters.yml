@@ -1,0 +1,8 @@
+# Radius of the Earth in kilometers
+earthRadiusKm: 6371.0
+# Geofence center coordinates (latitude and longitude)
+# These coordinates match the first waypoint in the dataset.
+geofenceCenterLatitude: 45.07527
+geofenceCenterLongitude: 7.62128
+# Geofence radius in kilometers
+geofenceRadiusKm: 5.0
